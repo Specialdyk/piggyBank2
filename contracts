@@ -1,0 +1,35 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract VickyPiggyBank {
+event Deposit(address indexed sender, uint amount);
+event Withdraw(uint amount);
+
+address public owner;
+uint256 public accountBalance;
+
+constructor() {
+owner = msg.sender;
+}
+
+modifier onlyOwner() {
+require(msg.sender == owner, "ONLY THE OWNER CAN CALL THIS FUNCTION");
+_;
+}
+ 
+function deposit() public payable {
+require(msg.value > 0, "MUST DEPOSIT SOME ETHER");
+accountBalance += msg.value;
+emit Deposit(msg.sender, msg.value);
+}
+
+
+function withdrawMoney() public payable onlyOwner {
+emit Withdraw(msg.value);
+selfdestruct(payable(msg.sender));
+}
+function getBalance() public view returns(uint256) {
+    return accountBalance;
+
+}
+}
